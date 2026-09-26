@@ -1,0 +1,22 @@
+services:
+  saroye-express:
+    build: .
+    container_name: saroye-express
+    ports:
+      - "3000:3000"
+    environment:
+      # Generate a real secret before going live! Example:
+      #   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+      - SESSION_SECRET=${SESSION_SECRET:-change-me-to-a-long-random-string}
+      # Optional: set your own one-time owner setup token. If empty, the app
+      # prints a random one to the container logs on first boot.
+      - OWNER_SETUP_TOKEN=${OWNER_SETUP_TOKEN:-}
+      - MAX_FILE_MB=${MAX_FILE_MB:-8}
+    volumes:
+      # Persistent storage: the database and all uploaded documents survive
+      # container restarts and redeploys because they live in this volume.
+      - saroye-data:/data
+    restart: unless-stopped
+
+volumes:
+  saroye-data:
